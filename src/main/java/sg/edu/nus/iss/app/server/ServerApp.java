@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 
 import static sg.edu.nus.iss.app.server.Calculator.*;
 
@@ -53,13 +55,35 @@ public class ServerApp {
                 while(true){
                     try{
                         String dataFromClient = dis.readUTF();
-                        
-                        if(dataFromClient.equals("get-numbers")){
-                            String result = getCalculator(dataFromClient);
-                            dos.writeUTF("Result is " + result);
-                        }else{
-                            dos.writeUTF("Invalid command !");
+                        for (int i = 0; i < dataFromClient.length(); i++) {
+                            if (Character.isDigit(dataFromClient.charAt(i)) ||dataFromClient.charAt(i) == ' ') {
+                               continue;
+                            }
+                            else{dos.writeUTF("There is an error");}
                         }
+
+                        //Replicate dataFromClient2
+                        String dataFromClient2 = dis.readUTF();
+                        for (int i = 0; i < dataFromClient2.length(); i++) {
+                            if (Character.isDigit(dataFromClient2.charAt(i)) ||dataFromClient2.charAt(i) == ' ') {
+                               continue;
+                            }
+                            else{dos.writeUTF("There is an error");}
+                        }
+                
+                        int[] result = getCalculator(dataFromClient, dataFromClient2);
+
+                    
+                        for(int i = 0; i<result.length; i++)
+                        {
+                            System.out.println(result[i]);
+                        } 
+                        
+                        String str = Arrays.toString(result);
+
+                        // dos.writeUTF("Result is_" + result);
+                        dos.writeUTF("Result is_" + str);
+
                     }catch (EOFException e) {
                         System.out.println("Client disconnected");
                         sock.close();
